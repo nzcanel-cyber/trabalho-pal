@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ybyrá Tour — Turismo em comunidades tradicionais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#221f10;
+    --olive-deep:#3a3814;
+    --olive:#54531f;
+    --olive-soft:#6b6a2c;
+    --cream:#f7f1e3;
+    --cream-2:#efe6cf;
+    --sand:#cdb789;
+    --rust:#b06430;
+    --rust-soft:#c98956;
+    --forest:#33421f;
+    --line:rgba(255,255,255,0.35);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Work Sans', sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.brand{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    line-height:1.08;
+  }
+  a{color:inherit;}
+  img{max-width:100%; display:block;}
+  .wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+  section{position:relative; overflow:hidden;}
+
+  /* ---------- decorative svg pieces ---------- */
+  .ring{position:absolute; pointer-events:none; z-index:0;}
+  .blob{position:absolute; pointer-events:none; z-index:0;}
+
+  /* ---------- header ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    padding:18px 0;
+    transition:background .3s ease, box-shadow .3s ease, padding .3s ease;
+  }
+  header.scrolled{
+    background:var(--olive-deep);
+    box-shadow:0 6px 24px rgba(0,0,0,.18);
+    padding:10px 0;
+  }
+  header .wrap{display:flex; align-items:center; justify-content:space-between;}
+  .brand{
+    color:var(--cream);
+    font-size:1.5rem;
+    letter-spacing:.3px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .brand svg{width:30px; height:30px;}
+  nav ul{
+    list-style:none;
+    display:flex;
+    gap:30px;
+  }
+  nav a{
+    color:var(--cream);
+    text-decoration:none;
+    font-size:.82rem;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    opacity:.9;
+    padding-bottom:6px;
+    position:relative;
+  }
+  nav a::after{
+    content:"";
+    position:absolute; left:0; bottom:0;
+    width:0; height:2px;
+    background:var(--rust-soft);
+    transition:width .25s ease;
+  }
+  nav a:hover{opacity:1;}
+  nav a:hover::after{width:100%;}
+  .nav-toggle{display:none; flex-direction:column; gap:5px; background:none; border:0; cursor:pointer; padding:6px;}
+  .nav-toggle span{width:24px; height:2px; background:var(--cream); display:block;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100vh;
+    background:radial-gradient(ellipse at 75% 20%, #4a4a1e 0%, var(--olive-deep) 55%, #2b2a0f 100%);
+    display:flex;
+    align-items:center;
+    padding-top:110px;
+  }
+  .hero .wrap{
+    position:relative; z-index:2;
+    display:flex;
+    justify-content:center;
+    width:100%;
+  }
+  .hero-copy{max-width:680px; text-align:center;}
+  .hero-copy .eyebrow-line{margin-left:auto; margin-right:auto;}
+  .cta-row{justify-content:center;}
+  .hero-copy .eyebrow-line{
+    width:64px; height:3px; background:var(--rust-soft);
+    margin-bottom:22px;
+  }
+  .hero-copy h1{
+    color:var(--cream);
+    font-size:clamp(3rem, 6vw, 5rem);
+    letter-spacing:.5px;
+  }
+  .hero-copy p.tag{
+    color:var(--sand);
+    font-size:1.3rem;
+    margin-top:18px;
+    max-width:34ch;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:500;
+  }
+  .hero-copy p.desc{
+    color:var(--cream-2);
+    margin-top:22px;
+    max-width:48ch;
+    font-size:1.02rem;
+  }
+  .cta-row{margin-top:36px; display:flex; gap:16px; flex-wrap:wrap;}
+  .btn{
+    display:inline-block;
+    padding:14px 30px;
+    border-radius:8px;
+    font-weight:600;
+    text-decoration:none;
+    font-size:.95rem;
+    letter-spacing:.3px;
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .btn-primary{background:var(--rust); color:var(--cream); box-shadow:0 8px 0 var(--olive-deep);}
+  .btn-primary:hover{transform:translateY(2px); box-shadow:0 6px 0 var(--olive-deep);}
+  .btn-ghost{border:1.5px solid var(--sand); color:var(--cream); background:transparent;}
+  .btn-ghost:hover{border-color:var(--rust-soft); color:var(--rust-soft);}
+
+  .hero-art{
+    position:relative;
+    aspect-ratio:1/1.05;
+  }
+
+  /* ---------- intro ---------- */
+  .intro{background:var(--cream); padding:120px 0 100px;}
+  .intro-head{max-width:640px; margin-bottom:56px;}
+  .intro-head .kicker{color:var(--rust); font-weight:600; font-size:.95rem;}
+  .intro-head h2{font-size:clamp(2.1rem, 4vw, 2.8rem); margin-top:10px; color:var(--olive-deep); position:relative; padding-bottom:18px;}
+  .intro-head h2::after{
+    content:""; position:absolute; left:0; bottom:0; width:56px; height:4px;
+    background:var(--rust); border-radius:2px;
+  }
+  .intro-list{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:28px;
+  }
+  .intro-item{
+    background:var(--cream-2);
+    border-left:4px solid var(--rust);
+    border-radius:4px 14px 14px 4px;
+    padding:32px 28px;
+    position:relative;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .intro-item:hover{transform:translateY(-4px); box-shadow:0 14px 28px rgba(58,56,20,.12);}
+  .intro-item .num-ring{
+    width:46px; height:46px;
+    border-radius:10px;
+    background:var(--olive-deep);
+    color:var(--cream);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:20px;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:600;
+  }
+  .intro-item p{font-size:1rem; color:var(--ink);}
+
+  /* ---------- problema/solucao ---------- */
+  .ps{
+    background:var(--olive-deep);
+    color:var(--cream);
+    padding:110px 0;
+  }
+  .ps .wrap{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    border-radius:28px;
+    overflow:hidden;
+  }
+  .ps-panel{padding:56px 48px; position:relative;}
+  .ps-panel.problema{background:var(--cream-2); color:var(--ink);}
+  .ps-panel.solucao{background:var(--rust); color:var(--cream);}
+  .ps-tag{
+    display:inline-block;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:600;
+    font-size:1.3rem;
+    margin-bottom:18px;
+  }
+  .ps-panel.problema .ps-tag{color:var(--olive-deep);}
+  .ps-panel p{font-size:1.05rem; max-width:40ch;}
+
+  /* ---------- projeto ---------- */
+  .projeto{background:var(--cream); padding:120px 0;}
+  .projeto .wrap{
+    display:flex;
+    justify-content:center;
+  }
+  .projeto-art{position:relative; aspect-ratio:1/1;}
+  .projeto-copy .kicker{color:var(--rust); font-weight:600;}
+  .projeto-copy h2{font-size:clamp(2rem, 4vw, 2.6rem); margin:10px 0 22px; color:var(--olive-deep);}
+  .projeto-copy p{font-size:1.05rem; max-width:52ch; color:var(--ink);}
+  .chip-row{display:flex; gap:12px; flex-wrap:wrap; margin-top:28px;}
+  .chip{
+    border:1.5px solid var(--forest); color:var(--forest);
+    background:transparent;
+    padding:8px 17px; border-radius:8px; font-size:.85rem; font-weight:600;
+  }
+
+  .galeria{background:var(--cream-2); padding:100px 0;}
+  .gallery-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .gallery-item{background:var(--cream); border-radius:16px; overflow:hidden; box-shadow:0 10px 24px rgba(58,56,20,.08);}
+  .gallery-item img{width:100%; height:220px; object-fit:cover; display:block;}
+  .gallery-item figcaption{padding:14px 16px; font-size:.9rem; font-weight:600; color:var(--olive-deep);}
+  .gallery-item figcaption span{display:block; font-weight:400; font-size:.78rem; color:var(--olive); margin-top:2px;}
+  .gallery-note{margin-top:26px; font-size:.9rem; color:var(--olive); font-style:italic; text-align:center;}
+
+  /* ---------- publico ---------- */
+  .publico{
+    background:var(--forest);
+    color:var(--cream);
+    padding:100px 0;
+  }
+  .publico .wrap{display:grid; grid-template-columns:.8fr 1.2fr; gap:50px; align-items:center;}
+  .publico h2{font-size:clamp(2rem,4vw,2.6rem);}
+  .publico .kicker{color:var(--sand); font-weight:600;}
+  .publico p{margin-top:20px; font-size:1.08rem; max-width:56ch; color:var(--cream-2);}
+  .audience-tags{display:flex; flex-wrap:wrap; gap:14px;}
+  .audience-tag{
+    border:1.5px solid var(--sand);
+    border-radius:8px;
+    padding:20px;
+    flex:1 1 130px;
+    text-align:center;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:600;
+    transition:border-color .2s ease;
+  }
+  .audience-tag:hover{border-color:var(--rust-soft);}
+
+  /* ---------- kit ---------- */
+  .kit{background:var(--cream); padding:120px 0;}
+  .kit .wrap{
+    display:flex;
+    justify-content:center;
+  }
+  .kit-copy .kicker{color:var(--rust); font-weight:600;}
+  .kit-copy h2{font-size:clamp(2rem,4vw,2.6rem); margin:10px 0 20px; color:var(--olive-deep);}
+  .kit-copy p.lead{font-size:1.08rem; max-width:48ch; margin-bottom:28px;}
+  .kit-items{list-style:none; display:flex; flex-direction:column; gap:12px; margin-bottom:28px;}
+  .kit-items li{
+    display:flex; align-items:center; gap:14px;
+    background:var(--olive-deep); color:var(--cream);
+    padding:14px 20px; border-radius:8px;
+    font-weight:500;
+  }
+  .kit-items li .dot{width:10px; height:10px; border-radius:50%; background:var(--rust-soft); flex-shrink:0;}
+  .kit-note{
+    font-size:.92rem; color:var(--olive); font-style:italic;
+  }
+  .kit-art{position:relative; aspect-ratio:1/1;}
+
+  /* ---------- footer ---------- */
+  footer{
+    background:var(--olive-deep);
+    color:var(--cream-2);
+    padding:70px 0 34px;
+  }
+  .footer-top{
+    display:grid;
+    grid-template-columns:1.3fr 1fr 1fr;
+    gap:48px;
+    padding-bottom:44px;
+    border-bottom:1px solid var(--line);
+  }
+  .footer-brand .brand{margin-bottom:14px;}
+  .footer-brand p{max-width:34ch; font-size:.95rem; color:var(--sand);}
+  footer h4{
+    font-family:'Baloo 2', sans-serif;
+    color:var(--cream);
+    margin-bottom:16px;
+    font-size:1.02rem;
+  }
+  footer ul{list-style:none; display:flex; flex-direction:column; gap:9px;}
+  footer ul li{font-size:.92rem; color:var(--cream-2);}
+  footer a{text-decoration:none; color:var(--cream-2);}
+  footer a:hover{color:var(--rust-soft);}
+  .footer-bottom{
+    padding-top:26px;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    font-size:.82rem; color:var(--sand);
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px){
+    .hero .wrap, .projeto .wrap, .publico .wrap, .kit .wrap{grid-template-columns:1fr;}
+    .intro-list{grid-template-columns:1fr;}
+    .gallery-grid{grid-template-columns:1fr;}
+    .ps .wrap{grid-template-columns:1fr;}
+    .footer-top{grid-template-columns:1fr; gap:32px;}
+    nav{
+      position:fixed; top:0; right:0; height:100vh; width:min(78vw,320px);
+      background:var(--olive-deep);
+      transform:translateX(100%);
+      transition:transform .3s ease;
+      padding:100px 30px 30px;
+      box-shadow:-10px 0 30px rgba(0,0,0,.3);
+    }
+    nav.open{transform:translateX(0);}
+    nav ul{flex-direction:column; gap:22px;}
+    .nav-toggle{display:flex;}
+  }
+  @media (max-width:520px){
+    .wrap{padding:0 20px;}
+    .intro, .ps, .projeto, .publico, .kit{padding-top:80px; padding-bottom:80px;}
+    .ps-panel{padding:40px 26px;}
+  }
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <div class="wrap">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C12 2 6 8 6 13C6 16.3137 8.68629 19 12 19C15.3137 19 18 16.3137 18 13C18 8 12 2 12 2Z" stroke="#F7F1E3" stroke-width="1.6"/>
+        <path d="M12 19V22" stroke="#F7F1E3" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      Ybyrá Tour
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="siteNav">
+      <ul>
+        <li><a href="#introducao">Introdução</a></li>
+        <li><a href="#projeto">Projeto</a></li>
+        <li><a href="#galeria">Galeria</a></li>
+        <li><a href="#publico">Público-alvo</a></li>
+        <li><a href="#kit">Kit Aventura</a></li>
+        <li><a href="#criadores">Criadores</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <div class="eyebrow-line"></div>
+      <h1>Ybyrá<br>Tour</h1>
+      <p class="tag">Turismo em comunidades tradicionais</p>
+      <p class="desc">Trilhas, vivências culturais e visitas guiadas às aldeias indígenas e ao Vale do Quilombo da Baixada Santista — conhecidas de perto, com respeito e segurança.</p>
+      <div class="cta-row">
+        <a href="#projeto" class="btn btn-primary">Conhecer o projeto</a>
+        <a href="#kit" class="btn btn-ghost">Ver Kit Aventura</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= INTRODUÇÃO ================= -->
+<section class="intro" id="introducao">
+  <div class="wrap">
+    <div class="intro-head">
+      <span class="kicker">Introdução</span>
+      <h2>Comunidades que merecem ser vistas de perto</h2>
+    </div>
+    <div class="intro-list">
+      <div class="intro-item">
+        <div class="num-ring">1</div>
+        <p>Na Baixada Santista, as comunidades indígenas e quilombolas da região ainda têm pouca visibilidade.</p>
+      </div>
+      <div class="intro-item">
+        <div class="num-ring">2</div>
+        <p>O projeto Ybyrá Tour propõe turismo de base comunitária e sustentável.</p>
+      </div>
+      <div class="intro-item">
+        <div class="num-ring">3</div>
+        <p>A iniciativa oferece visitas guiadas, vivências culturais e trilhas ecológicas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROBLEMA / SOLUÇÃO ================= -->
+<section class="ps">
+  <div class="wrap">
+    <div class="ps-panel problema">
+      <span class="ps-tag">Qual o problema?</span>
+      <p>Falta de visibilidade e conhecimento sobre as comunidades tradicionais — indígenas e quilombolas — da Baixada Santista.</p>
+    </div>
+    <div class="ps-panel solucao">
+      <span class="ps-tag">Qual a solução?</span>
+      <p>Trazer visibilidade e conhecimento dessas comunidades por meio de visitas e roteiros acompanhados por um guia especializado.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROJETO ================= -->
+<section class="projeto" id="projeto">
+  <div class="wrap">
+    <div class="projeto-copy" style="max-width:720px; margin:0 auto; text-align:center;">
+      <span class="kicker">O projeto</span>
+      <h2>Uma agência pensada para conectar visitantes e comunidades</h2>
+      <p style="margin:0 auto;">Criação de uma agência e site para organizar inscrições e visitas a comunidades tradicionais da Baixada Santista, oferecendo experiências culturais e turismo de natureza com segurança e conforto. O transporte é feito por van ou ônibus, atendendo visitantes da região e de outros estados.</p>
+      <div class="chip-row" style="justify-content:center;">
+        <span class="chip">Visitas guiadas</span>
+        <span class="chip">Vivências culturais</span>
+        <span class="chip">Trilhas ecológicas</span>
+        <span class="chip">Transporte incluso</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GALERIA ================= -->
+<section class="galeria" id="galeria">
+  <div class="wrap">
+    <div class="intro-head">
+      <span class="kicker">Galeria</span>
+      <h2>A natureza que inspira o roteiro</h2>
+      <p style="max-width:60ch; margin-top:14px; color:var(--ink)">Fotos ilustrativas de uso livre (Unsplash License), representando os ambientes de mata, manguezal e arquitetura tradicional presentes no roteiro.</p>
+    </div>
+    <div class="gallery-grid">
+      <figure class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1724334797600-185500de1acb?fm=jpg&q=80&w=900&auto=format&fit=crop" alt="Trilha na mata fechada">
+        <figcaption>Trilha na mata <span>· Foto: Bob Brewer / Unsplash</span></figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1718194968885-1bce4a26b31e?fm=jpg&q=80&w=900&auto=format&fit=crop" alt="Manguezal visto de cima">
+        <figcaption>Manguezal <span>· Foto: Michel Isamuna / Unsplash</span></figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1725436142621-df61e196501c?fm=jpg&q=80&w=900&auto=format&fit=crop" alt="Casas com telhado de sapé">
+        <figcaption>Arquitetura tradicional <span>· Foto: Andy Cat / Unsplash</span></figcaption>
+      </figure>
+    </div>
+    <p class="gallery-note">As imagens acima não retratam as aldeias da Baixada Santista; foram utilizadas apenas como referência ilustrativa, com o objetivo de representar visualmente como seriam esses ambientes.</p>
+  </div>
+</section>
+<section class="publico" id="publico">
+  <div class="wrap">
+    <div>
+      <span class="kicker">Público-alvo</span>
+      <h2>Feito para quem quer aprender explorando</h2>
+      <p>O público-alvo deste projeto é composto por estudantes do ensino fundamental, médio, técnico e superior. Como forma de acessar esse público, escolas públicas e particulares podem contratar os serviços.</p>
+    </div>
+    <div class="audience-tags">
+      <div class="audience-tag">Ensino<br>Fundamental</div>
+      <div class="audience-tag">Ensino<br>Médio</div>
+      <div class="audience-tag">Ensino<br>Técnico</div>
+      <div class="audience-tag">Ensino<br>Superior</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= KIT AVENTURA ================= -->
+<section class="kit" id="kit">
+  <div class="wrap">
+    <div class="kit-copy" style="max-width:640px; margin:0 auto; text-align:center;">
+      <span class="kicker">Kit Aventura Ybyrá</span>
+      <h2>Pensado para explorar a natureza com segurança e conforto</h2>
+      <p class="lead" style="margin-left:auto; margin-right:auto;">Um kit completo para acompanhar cada trilha e vivência com tranquilidade.</p>
+      <ul class="kit-items">
+        <li><span class="dot"></span> Garrafa de água</li>
+        <li><span class="dot"></span> Protetor solar</li>
+        <li><span class="dot"></span> Repelente</li>
+        <li><span class="dot"></span> Capa de chuva</li>
+      </ul>
+      <p class="kit-note">O kit é vendido pelo site, com combos e ofertas, e separado pessoalmente dos ingressos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer id="criadores">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C12 2 6 8 6 13C6 16.3137 8.68629 19 12 19C15.3137 19 18 16.3137 18 13C18 8 12 2 12 2Z" stroke="#F7F1E3" stroke-width="1.6"/>
+            <path d="M12 19V22" stroke="#F7F1E3" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          Ybyrá Tour
+        </div>
+        <p>Turismo de base comunitária pelas aldeias indígenas e pelo Vale do Quilombo na Baixada Santista.</p>
+      </div>
+      <div>
+        <h4>Equipe</h4>
+        <ul>
+          <li>Arthur Dimas</li>
+          <li>Clara de Oliveira</li>
+          <li>Enzo Canelas</li>
+          <li>Enzo Cintas</li>
+          <li>Igor Sena</li>
+          <li>Júlia Boeira</li>
+          <li>Vitoria Fernandes</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Referências</h4>
+        <ul>
+          <li><a href="https://www.juicysantos.com.br/noticias-da-regiao/aldeias-indigenas-na-baixada-santista-mantem-cultura-ancestral-viva/cy" target="_blank" rel="noopener">Juicy Santos — aldeias indígenas na Baixada Santista</a></li>
+          <li><a href="https://www.geokratos.ggf.br/2024/04/indigenas-da-baixada-santista.html" target="_blank" rel="noopener">Geokratos — indígenas da Baixada Santista</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Ybyrá Tour — projeto do Ensino Médio Técnico em Administração, Senac Santos</span>
+      <span>&copy; 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  const navToggle = document.getElementById('navToggle');
+  const nav = document.getElementById('siteNav');
+  navToggle.addEventListener('click', () => nav.classList.toggle('open'));
+  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
+</script>
+</body>
+</html>
